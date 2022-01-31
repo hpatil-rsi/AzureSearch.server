@@ -54,18 +54,23 @@ namespace CognitiveSearch.UI
         // this should match the default value used in appsettings.json.  
         private static string defaultContainerUriValue = "https://{storage-account-name}.blob.core.windows.net/{container-name}";
 
-
-        public DocumentSearchClient(IConfiguration configuration,string indexname, bool isMongoIndex = false)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="indexname"></param>
+        /// <exception cref="ArgumentException"></exception>
+        public DocumentSearchClient(IConfiguration configuration, string indexname)
         {
             try
             {
-                var newindexname = !string.IsNullOrEmpty(indexname) ? indexname : configuration.GetSection("SearchIndexName")?.Value;
+                var newindexname = !string.IsNullOrEmpty(indexname) ? indexname : configuration.GetSection("EntitySearchIndexName")?.Value;
                 var newindexername = configuration.GetSection("SearchIndexerName")?.Value;
-                if (isMongoIndex == true)
-                {
-                   newindexname =  configuration.GetSection("MongoSearchIndexName").Value;
-                   newindexername = configuration.GetSection("MongoSearchIndexer").Value;
-                }
+                //if (isMongoIndex == true)
+                //{
+                //    newindexname = configuration.GetSection("MongoSearchIndexName").Value;
+                //    newindexername = configuration.GetSection("MongoSearchIndexer").Value;
+                //}
 
                 _configuration = configuration;
                 searchServiceName = configuration.GetSection("SearchServiceName")?.Value;
@@ -97,6 +102,48 @@ namespace CognitiveSearch.UI
                 throw new ArgumentException(e.Message.ToString());
             }
         }
+        //public DocumentSearchClient(IConfiguration configuration,string indexname, bool isMongoIndex = false)
+        //{
+        //    try
+        //    {
+        //        var newindexname = !string.IsNullOrEmpty(indexname) ? indexname : configuration.GetSection("SearchIndexName")?.Value;
+        //        var newindexername = configuration.GetSection("SearchIndexerName")?.Value;
+        //        if (isMongoIndex == true)
+        //        {
+        //           newindexname =  configuration.GetSection("MongoSearchIndexName").Value;
+        //           newindexername = configuration.GetSection("MongoSearchIndexer").Value;
+        //        }
+
+        //        _configuration = configuration;
+        //        searchServiceName = configuration.GetSection("SearchServiceName")?.Value;
+        //        apiKey = configuration.GetSection("SearchApiKey")?.Value;
+        //        IndexName = newindexname;
+        //        //IndexName =  configuration.GetSection("SearchIndexName")?.Value;
+        //        IndexerName = newindexername;
+        //        idField = configuration.GetSection("KeyField")?.Value;
+        //        telemetryClient.InstrumentationKey = configuration.GetSection("InstrumentationKey")?.Value;
+
+        //        // Options used to get a search id for reporting
+        //        SearchClientOptions clientOptions = new SearchClientOptions();
+        //        clientOptions.AddPolicy(new SearchIdPipelinePolicy(), HttpPipelinePosition.PerCall);
+
+        //        // Create an HTTP reference to the catalog index
+        //        _searchIndexClient = new SearchIndexClient(new Uri($"https://{searchServiceName}.search.windows.net/"), new AzureKeyCredential(apiKey), options: clientOptions);
+        //        _searchClient = _searchIndexClient.GetSearchClient(IndexName);
+
+        //        Schema = new SearchSchema().AddFields(_searchIndexClient.GetIndex(IndexName).Value.Fields);
+        //        Model = new SearchModel(Schema);
+
+        //        _isPathBase64Encoded = (configuration.GetSection("IsPathBase64Encoded")?.Value == "True");
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        // If you get an exception here, most likely you have not set your
+        //        // credentials correctly in appsettings.json
+        //        throw new ArgumentException(e.Message.ToString());
+        //    }
+        //}
         /// <summary>
         /// 
         /// </summary>

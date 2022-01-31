@@ -72,9 +72,15 @@ namespace AzureSearch.suites.AzureSearch
         /// <param name="facets"></param>
         /// <param name="page"></param>
         /// <returns></returns>
-        public SearchResultViewModel SearchEntity(string q, string facets = "", int page = 1,bool isProperty=false, bool isMongoIndex = false)
+        public SearchResultViewModel SearchEntity(string q, string facets = "", int page = 1,bool isProperty=false, bool isMongoIndex = false,bool globalIndex=false)
         {
-            _docSearch = new DocumentSearchClient(_configuration, _configuration.GetSection("EntitySearchIndexName")?.Value, isMongoIndex);
+            //_docSearch = new DocumentSearchClient(_configuration, _configuration.GetSection("EntitySearchIndexName")?.Value, isMongoIndex);
+            string indexName = isProperty ? _configuration.GetSection("EntitySearchIndexName")?.Value
+                              : isMongoIndex ? _configuration.GetSection("EntitySearchIndexName")?.Value
+                              : _configuration.GetSection("EntitySearchIndexName")?.Value;
+
+            _docSearch = new DocumentSearchClient(_configuration, indexName);
+
             if (facets == null)
                 facets = "";
             if (q == null)
